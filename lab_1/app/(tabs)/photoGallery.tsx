@@ -1,23 +1,35 @@
-import { Stack } from "expo-router";
+import { FlatList, Image, StyleSheet, View } from 'react-native';
 
-import { StyleSheet, View } from "react-native";
+const data = new Array(16).fill(null).map((_, i) => `https://picsum.photos/seed/${i}/300/400`);
 
-import { ScreenContent } from "~/components/ScreenContent";
-
-export default function Home() {
+export default function PhotoGallery() {
   return (
-    <>
-      <Stack.Screen options={{ title: "Tab Two" }} />
-      <View style={styles.container}>
-        <ScreenContent path="app/(tabs)/two.tsx" title="Tab Two" />
-      </View>
-    </>
+    <View className="w-full">
+      <FlatList
+        data={data}
+        numColumns={2}
+        columnWrapperClassName="justify-center"
+        keyExtractor={(item) => item}
+        renderItem={({ item }) => (
+          <View className="m-2 h-32 w-[45%]">
+            <Image className="h-32 rounded-sm" style={styles.shadow} source={{ uri: item }} />
+          </View>
+        )}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+
+    elevation: 7,
   },
 });
