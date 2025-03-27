@@ -1,12 +1,16 @@
 import { Link } from 'expo-router';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { Dimensions, View } from 'react-native';
 import {
+  Directions,
+  FlingGestureHandler,
   LongPressGestureHandler,
   PanGestureHandler,
   TapGestureHandler,
 } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+
+const { width, height } = Dimensions.get('screen');
 
 export default function Home() {
   const [score, setScore] = useState(0);
@@ -43,6 +47,7 @@ export default function Home() {
                 setScore((prev) => prev + 3);
               }}>
               <PanGestureHandler
+                minPointers={2}
                 minDist={50}
                 onBegan={() => {
                   oldTranslateX.value = translateX.value;
@@ -55,10 +60,28 @@ export default function Home() {
                 onEnded={() => {
                   setScore((prev) => prev + 10);
                 }}>
-                <Animated.View
-                  className="h-[150px] w-[150px] rounded bg-red-800"
-                  style={animatedStyle}
-                />
+                <FlingGestureHandler
+                  direction={Directions.RIGHT}
+                  onActivated={() => {
+                    translateX.value = width / 3;
+                  }}
+                  onEnded={() => {
+                    setScore((prev) => prev + 5);
+                  }}>
+                  <FlingGestureHandler
+                    direction={Directions.LEFT}
+                    onActivated={() => {
+                      translateX.value = -width / 3;
+                    }}
+                    onEnded={() => {
+                      setScore((prev) => prev + 5);
+                    }}>
+                    <Animated.View
+                      className="h-[150px] w-[150px] rounded bg-red-800"
+                      style={animatedStyle}
+                    />
+                  </FlingGestureHandler>
+                </FlingGestureHandler>
               </PanGestureHandler>
             </LongPressGestureHandler>
           </TapGestureHandler>
