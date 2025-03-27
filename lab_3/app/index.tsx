@@ -1,7 +1,7 @@
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
-import { TapGestureHandler } from 'react-native-gesture-handler';
+import { LongPressGestureHandler, TapGestureHandler } from 'react-native-gesture-handler';
 
 export default function Home() {
   const [score, setScore] = useState(0);
@@ -23,7 +23,13 @@ export default function Home() {
             onEnded={() => {
               setScore((prev) => prev + 2);
             }}>
-            <View className="h-[150px] w-[150px] rounded bg-red-800" />
+            <LongPressGestureHandler
+              minDurationMs={3000}
+              onEnded={() => {
+                setScore((prev) => prev + 3);
+              }}>
+              <View className="h-[150px] w-[150px] rounded bg-red-800" />
+            </LongPressGestureHandler>
           </TapGestureHandler>
         </TapGestureHandler>
       </View>
