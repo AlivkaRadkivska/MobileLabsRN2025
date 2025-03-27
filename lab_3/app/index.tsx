@@ -6,6 +6,7 @@ import {
   FlingGestureHandler,
   LongPressGestureHandler,
   PanGestureHandler,
+  PinchGestureHandler,
   TapGestureHandler,
 } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
@@ -19,9 +20,15 @@ export default function Home() {
   const oldTranslateY = useSharedValue(0);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
+  const oldScale = useSharedValue(1);
+  const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }, { translateY: translateY.value }],
+    transform: [
+      { translateX: translateX.value },
+      { translateY: translateY.value },
+      { scale: scale.value },
+    ],
   }));
 
   return (
@@ -76,10 +83,21 @@ export default function Home() {
                     onEnded={() => {
                       setScore((prev) => prev + 5);
                     }}>
-                    <Animated.View
-                      className="h-[150px] w-[150px] rounded bg-red-800"
-                      style={animatedStyle}
-                    />
+                    <PinchGestureHandler
+                      onBegan={() => {
+                        oldScale.value = scale.value;
+                      }}
+                      onGestureEvent={(event) => {
+                        scale.value = oldScale.value * event.nativeEvent.scale;
+                      }}
+                      onEnded={() => {
+                        setScore((prev) => prev + 5);
+                      }}>
+                      <Animated.View
+                        className="h-[150px] w-[150px] rounded bg-red-800"
+                        style={animatedStyle}
+                      />
+                    </PinchGestureHandler>
                   </FlingGestureHandler>
                 </FlingGestureHandler>
               </PanGestureHandler>
