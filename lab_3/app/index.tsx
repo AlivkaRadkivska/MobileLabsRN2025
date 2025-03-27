@@ -1,5 +1,4 @@
 import { Link } from 'expo-router';
-import { useState } from 'react';
 import { Dimensions, View } from 'react-native';
 import {
   Directions,
@@ -10,11 +9,12 @@ import {
   TapGestureHandler,
 } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { useStore } from '~/context/StoreContext';
 
 const { width, height } = Dimensions.get('screen');
 
 export default function Home() {
-  const [score, setScore] = useState(0);
+  const { score, dispatchTask } = useStore();
 
   const oldTranslateX = useSharedValue(0);
   const oldTranslateY = useSharedValue(0);
@@ -41,17 +41,17 @@ export default function Home() {
       <View className="items-center justify-center">
         <TapGestureHandler
           onEnded={() => {
-            setScore((prev) => prev + 1);
+            dispatchTask({ type: 'ADD_CLICK_PROGRESS' });
           }}>
           <TapGestureHandler
             numberOfTaps={2}
             onEnded={() => {
-              setScore((prev) => prev + 2);
+              dispatchTask({ type: 'ADD_DOUBLE_CLICK_PROGRESS' });
             }}>
             <LongPressGestureHandler
               minDurationMs={3000}
               onEnded={() => {
-                setScore((prev) => prev + 3);
+                dispatchTask({ type: 'ADD_HOLD_PROGRESS' });
               }}>
               <PanGestureHandler
                 minPointers={2}
@@ -65,7 +65,7 @@ export default function Home() {
                   translateY.value = oldTranslateY.value + event.nativeEvent.translationY;
                 }}
                 onEnded={() => {
-                  setScore((prev) => prev + 10);
+                  dispatchTask({ type: 'ADD_DRAG_PROGRESS' });
                 }}>
                 <FlingGestureHandler
                   direction={Directions.RIGHT}
@@ -73,7 +73,7 @@ export default function Home() {
                     translateX.value = width / 3;
                   }}
                   onEnded={() => {
-                    setScore((prev) => prev + 5);
+                    dispatchTask({ type: 'ADD_SWIPE_RIGHT_PROGRESS' });
                   }}>
                   <FlingGestureHandler
                     direction={Directions.LEFT}
@@ -81,7 +81,7 @@ export default function Home() {
                       translateX.value = -width / 3;
                     }}
                     onEnded={() => {
-                      setScore((prev) => prev + 5);
+                      dispatchTask({ type: 'ADD_SWIPE_LEFT_PROGRESS' });
                     }}>
                     <PinchGestureHandler
                       onBegan={() => {
@@ -91,7 +91,7 @@ export default function Home() {
                         scale.value = oldScale.value * event.nativeEvent.scale;
                       }}
                       onEnded={() => {
-                        setScore((prev) => prev + 5);
+                        dispatchTask({ type: 'ADD_RESIZE_PROGRESS' });
                       }}>
                       <Animated.View
                         className="h-[150px] w-[150px] rounded bg-red-800"

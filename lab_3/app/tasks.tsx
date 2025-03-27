@@ -1,23 +1,8 @@
 import { FlatList, Text, View } from 'react-native';
+import { useStore } from '~/context/StoreContext';
 
 export default function Tasks() {
-  const tasks = [
-    {
-      id: 1,
-      title: 'Завдання 1',
-      isCompleted: false,
-    },
-    {
-      id: 2,
-      title: 'Завдання 2',
-      isCompleted: true,
-    },
-    {
-      id: 3,
-      title: 'Завдання 3',
-      isCompleted: false,
-    },
-  ];
+  const { tasks } = useStore();
 
   return (
     <View>
