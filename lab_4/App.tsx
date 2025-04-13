@@ -1,9 +1,10 @@
 import { Button, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Reminder } from 'types';
 import Task from 'components/Task';
+import { deleteNotification, registerOneSignal, sendNotification } from 'oneSignal';
 import './global.css';
 
 export default function App() {
@@ -13,11 +14,17 @@ export default function App() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [reminders, setReminders] = useState<Reminder[]>([]);
 
+  useEffect(() => {
+    registerOneSignal();
+  }, []);
+
   const addReminder = async () => {
     if (!name || !description || Number(date) < Date.now()) return;
 
-    const newReminder = {
-      id: Math.random().toString(10),
+    const oneSignalData = await sendNotification(name, description, date);
+
+    const newReminder: Reminder = {
+      id: oneSignalData.id,
       name,
       description,
       date,
@@ -29,8 +36,11 @@ export default function App() {
     setDate(new Date());
   };
 
-  const removeReminder = (id: string) => {
-    setReminders(reminders.filter((reminder) => reminder.id !== id));
+  const removeReminder = async (id: string) => {
+    const oneSignalData = await deleteNotification(id);
+    if (oneSignalData.success) {
+      setReminders(reminders.filter((reminder) => reminder.id !== id));
+    }
   };
 
   return (

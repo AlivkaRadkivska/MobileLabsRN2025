@@ -9,7 +9,14 @@
     "experiments": {
       "tsconfigPaths": true
     },
-    "plugins": [],
+    "plugins": [
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "development"
+        }
+      ]
+    ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -22,7 +29,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.myexpoapp"
     },
     "android": {
       "adaptiveIcon": {
@@ -30,6 +38,9 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.anonymous.myexpoapp"
+    },
+    "extra": {
+      "oneSignalAppId": "58a79495-dba0-440e-be26-677850f490ea"
     }
   }
 }
