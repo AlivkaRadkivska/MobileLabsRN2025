@@ -11,8 +11,7 @@
 2. Start the app
 
    ```bash
-   npm run prebuild
-   npm run android
+    npm run android
    ```
 
 ## Screenshots
