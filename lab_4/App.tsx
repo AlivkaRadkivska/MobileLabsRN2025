@@ -1,7 +1,9 @@
-import { Button, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Button, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
+import { Reminder } from 'types';
+import Task from 'components/Task';
 import './global.css';
 
 export default function App() {
@@ -9,13 +11,26 @@ export default function App() {
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [reminders, setReminders] = useState<Reminder[]>([]);
 
   const addReminder = async () => {
     if (!name || !description || Number(date) < Date.now()) return;
 
+    const newReminder = {
+      id: Math.random().toString(10),
+      name,
+      description,
+      date,
+    };
+    setReminders((prev) => [...prev, newReminder]);
+
     setName('');
     setDescription('');
     setDate(new Date());
+  };
+
+  const removeReminder = (id: string) => {
+    setReminders(reminders.filter((reminder) => reminder.id !== id));
   };
 
   return (
@@ -56,6 +71,14 @@ export default function App() {
       />
 
       <Button title="Додати нагадування" onPress={addReminder} />
+
+      <FlatList
+        data={reminders}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <Task {...item} removeReminder={removeReminder.bind(null, item.id)} />
+        )}
+      />
 
       <StatusBar style="auto" />
     </View>
