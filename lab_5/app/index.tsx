@@ -9,7 +9,14 @@ export default function Home() {
       <Stack.Screen options={{ title: 'Home' }} />
       <Container>
         <Info />
-        <Link href={{ pathname: '/folder', params: { path: '/' } }} asChild>
+        <Link
+          href={{
+            pathname: '/explorer/[path]',
+            params: {
+              path: '/',
+            },
+          }}
+          asChild>
           <Button title="Open root" />
         </Link>
       </Container>
