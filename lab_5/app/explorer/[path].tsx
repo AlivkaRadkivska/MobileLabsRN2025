@@ -34,13 +34,20 @@ export default function Explorer() {
   };
 
   const onSubmitCreate = async (name: string) => {
-    if (name.includes('.txt')) {
+    if (name.endsWith('.txt')) {
       await createFile(name);
     } else {
       await createDirectory(name);
     }
   };
 
+  const sortedItems = items.toSorted((a, b) => {
+    const aIsFile = a.endsWith('.txt');
+    const bIsFile = b.endsWith('.txt');
+    if (aIsFile && !bIsFile) return 1;
+    if (!aIsFile && bIsFile) return -1;
+    return a.localeCompare(b);
+  });
   return (
     <>
       <Stack.Screen options={{ title: path.toString() }} />
@@ -57,7 +64,7 @@ export default function Explorer() {
           />
         </View>
         <FlatList
-          data={items}
+          data={sortedItems}
           renderItem={({ item }) => (
             <Link href={{ pathname: '/explorer/[path]', params: { path: `${path}${item}/` } }}>
               {item}
