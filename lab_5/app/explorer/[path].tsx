@@ -1,16 +1,20 @@
-import { Link, Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { FlatList, TextInput, View } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import { Container } from '~/components/Container';
 import { useEffect, useState } from 'react';
+import Folder from '~/components/Folder';
+import { rootPath } from '~/const';
 
-const ROOT_DIR = FileSystem.documentDirectory;
+function isFolder(name: string) {
+  return !name.endsWith('.txt');
+}
 
 export default function Explorer() {
   const { path } = useLocalSearchParams();
   const [items, setItems] = useState<string[]>([]);
   const [createInput, setCreateInput] = useState<string>('');
-  const currentPath = `${ROOT_DIR}AppData${path}`;
+  const currentPath = `${rootPath}${path}`;
 
   useEffect(() => {
     loadStructure();
@@ -34,16 +38,16 @@ export default function Explorer() {
   };
 
   const onSubmitCreate = async (name: string) => {
-    if (name.endsWith('.txt')) {
+    if (isFolder(name)) {
       await createFile(name);
     } else {
       await createDirectory(name);
     }
   };
 
-  const sortedItems = items.toSorted((a, b) => {
-    const aIsFile = a.endsWith('.txt');
-    const bIsFile = b.endsWith('.txt');
+  const sortedItems = items.sort((a, b) => {
+    const aIsFile = !isFolder(a);
+    const bIsFile = !isFolder(b);
     if (aIsFile && !bIsFile) return 1;
     if (!aIsFile && bIsFile) return -1;
     return a.localeCompare(b);
@@ -55,6 +59,7 @@ export default function Explorer() {
         <View>
           <TextInput
             className="rounded-md border-2 border-gray-300 p-2"
+            placeholder="Create file or folder"
             value={createInput}
             onChangeText={setCreateInput}
             onSubmitEditing={() => {
@@ -66,9 +71,13 @@ export default function Explorer() {
         <FlatList
           data={sortedItems}
           renderItem={({ item }) => (
-            <Link href={{ pathname: '/explorer/[path]', params: { path: `${path}${item}/` } }}>
-              {item}
-            </Link>
+            <>
+              {isFolder(item) ? (
+                <Folder fullPath={`${path}${item}/`} name={item} refresh={loadStructure} />
+              ) : (
+                <></>
+              )}
+            </>
           )}
         />
       </Container>
