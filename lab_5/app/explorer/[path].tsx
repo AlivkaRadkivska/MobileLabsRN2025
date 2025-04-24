@@ -1,5 +1,5 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { FlatList, TextInput, View } from 'react-native';
+import { Button, FlatList, TextInput, View } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import { Container } from '~/components/Container';
 import { useEffect, useState } from 'react';
@@ -40,9 +40,9 @@ export default function Explorer() {
 
   const onSubmitCreate = async (name: string) => {
     if (isFolder(name)) {
-      await createFile(name);
-    } else {
       await createDirectory(name);
+    } else {
+      await createFile(name);
     }
   };
 
@@ -63,7 +63,10 @@ export default function Explorer() {
             placeholder="Create file or folder"
             value={createInput}
             onChangeText={setCreateInput}
-            onSubmitEditing={() => {
+          />
+          <Button
+            title="Create"
+            onPress={() => {
               onSubmitCreate(createInput);
               setCreateInput('');
             }}
