@@ -5,6 +5,7 @@ import { Container } from '~/components/Container';
 import { useEffect, useState } from 'react';
 import Folder from '~/components/Folder';
 import { rootPath } from '~/const';
+import TextFile from '~/components/TextFile';
 
 function isFolder(name: string) {
   return !name.endsWith('.txt');
@@ -75,7 +76,7 @@ export default function Explorer() {
               {isFolder(item) ? (
                 <Folder fullPath={`${path}${item}/`} name={item} refresh={loadStructure} />
               ) : (
-                <></>
+                <TextFile fullPath={`${path}${item}/`} name={item} refresh={loadStructure} />
               )}
             </>
           )}
