@@ -1,4 +1,4 @@
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { rootPath } from '~/const';
@@ -51,8 +51,22 @@ export default function TextFile({
   };
 
   const handleDelete = async () => {
-    await FileSystem.deleteAsync(`${rootPath}${fullPath}`, { idempotent: true });
-    refresh();
+    Alert.alert(
+      `Delete file ${name}`,
+      undefined,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            await FileSystem.deleteAsync(`${rootPath}${fullPath}`, { idempotent: true });
+            refresh();
+          },
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   return (
