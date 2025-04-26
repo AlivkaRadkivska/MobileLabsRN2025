@@ -38,9 +38,10 @@ export default function TextFile({
       const fileInfo = await FileSystem.getInfoAsync(`${rootPath}${fullPath}`);
       if (fileInfo.exists) {
         const { size, modificationTime } = fileInfo;
+        const modificationTimeNormalized = modificationTime * 1000;
         setStats({
           size: bytes.format(size) ?? '0',
-          lastModified: new Date(modificationTime).toLocaleString(),
+          lastModified: new Date(modificationTimeNormalized).toLocaleString(),
         });
       }
     })();
